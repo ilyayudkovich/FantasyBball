@@ -1,11 +1,16 @@
 import csv
+import time
+
+# gets the current date
+def printTime():
+	now = time.localtime(time.time())
+	print time.strftime("%m/%d/%y", now)
 
 class Player(object):
-	salary = 60000
 	name = ""
 	FPG = 0
 	Price = 0
-	Posn = "" 
+	Posn = ""
 	Opp = ""
 
 	"""docstring for Player"""
@@ -34,13 +39,13 @@ class Player(object):
 
 	def reachGoal(self):
 		return self.targetGoal() < self.FPG
-		
+
 	def percentValue(player):
 		FPG = player.FPG
 		print round(FPG * 100/ player.Price, 4)
 
 def knapSack(players, money):
-	
+
 	def bestValue(i, j):
 		if i == 0: return 0
 		value, weight = players[i - 1].FPG, players[i - 1].Price
@@ -65,7 +70,7 @@ def main():
 	SF = []
 	PF = []
 	C = []
-	f =  open('NBA125.csv', 'rb') 
+	f =  open('NBA125.csv', 'rb')
 	reader = csv.reader(f)
 	reader.next()
 	for row in reader:
@@ -101,7 +106,7 @@ def main():
 	print "\nPrinting SG's"
 	for player in SG:
 		if (player.reachGoal()):
-			print player.toString() 
+			print player.toString()
 			print player.dollarPerPoint()
 	print "\nPrinting SF's"
 	for player in SF:
@@ -119,6 +124,7 @@ def main():
 			print player.toString()
 			print player.dollarPerPoint()
 	print  "\n"
-	print knapSack(players, 60000)
 
-main()
+
+# main()
+printTime()
