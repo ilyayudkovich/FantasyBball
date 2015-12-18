@@ -54,38 +54,38 @@ class Player(object):
 # the knapsack algorithm that will be used in determining the optimal lineup
 def knapSack(players, money):
 
-	# determines the best value between a player and the amount of money 
-	# allowed to be spent
-	def bestValue(i, j):
-		# if i is empty, just return
-		if i == 0: return 0
-		# set the tuple value, weight to be FPG, Price
-		value, weight = players[i - 1].FPG, players[i - 1].Price
-		# if the weight is > than j
-		if weight > j:
-			# do not include this player
-			return bestValue(i - 1, j) 
-		# otherwise 
-		else:
-			# return the bestValue between choosing this 
-			# player and not choosing this player
-			return max(bestValue(i - 1, j),
-						bestValue(i - 1, j - weight) + value)
-	# set j to be the total money we can spend 
-	j = money
-	# an intialization of the final list of players
-	result = []
-	# for all the players
-	for i in range(0, len(players)):
-		# check to see if we include the final player
-		if bestValue(i, j) != bestValue(i -1, j):
-			# add them to the result array
-			result.append(players[i - 1])
-			# subtract his cost 
-			j -= players[i - 1].Price
-	# return the result
-	return result
+    memo = []
 
+    # gets the best value of players up to i with budget j
+    def bestValue(i,j):
+        if j/100 >= len(memo) or j < 0:
+            return 0
+        if i >= len(memo[j/100]) or i < 0:
+            return 0
+        else:
+            return memo[j/100][i]
+
+    for budget in range(0, money + 100, 100):
+        memo.append([])
+        for player in range(0,len(players)):
+            take = players[player].FPG + bestValue(player - 1, budget - players[player].Price)
+            notake = bestValue(player-1, budget)
+            memo[budget/100].append(max(take, notake))
+
+    team = []
+
+    budget = money
+    picks = len(players)
+
+    while(budget > 0 and picks > 0):
+        if bestValue(picks, budget) > bestValue(picks - 1, budget):
+            team.append(players[picks])
+            budget = budget - players[picks].Price
+        picks = picks - 1
+    
+    names = map(lambda x: x.name, team)
+    print "team: ", names
+    print "Fantasy points: ", memo[money/100][len(players) -1]
 
 # the main method
 def main():
@@ -124,11 +124,11 @@ def main():
 	C.sort()
 	# create a new array that contains all the players
 	players = []
-	players.append(PG)
-	players.append(SG)
-	players.append(SF)
-	players.append(PF)
-	players.append(C)
+	players.extend(PG)
+	players.extend(SG)
+	players.extend(SF)
+	players.extend(PF)
+	players.extend(C)
 	# start printing all the players based on position
 	# only if they reach their goal
 	print "Printing PG's"
@@ -159,7 +159,6 @@ def main():
 			print player.dollarPerPoint()
 	print  "\n"
 	# print the result of the knapsack algorithm
-	print knapsack(players, 60000)
+	knapSack(players, 60000)
 
 main()
-printTime()
