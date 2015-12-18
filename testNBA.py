@@ -54,7 +54,7 @@ class Player(object):
 # the knapsack algorithm that will be used in determining the optimal lineup
 def knapSack(players, money):
 
-    memo = []
+    memo = [] # holds the answers to the previous arrays
 
     # gets the best value of players up to i with budget j
     def bestValue(i,j):
@@ -65,27 +65,51 @@ def knapSack(players, money):
         else:
             return memo[j/100][i]
 
+    # the budges from 0, increment by 100 up until all of the money + 100
     for budget in range(0, money + 100, 100):
-        memo.append([])
-        for player in range(0,len(players)):
-            take = players[player].FPG + bestValue(player - 1, budget - players[player].Price)
+        memo.append([]) # append a blank list
+        for player in range(0,len(players)): # for each player 
+        	# what happens if we take
+            take = players[player].FPG + bestValue(player - 1, budget - players[player].Price) 
+            # what happens if we dont take
             notake = bestValue(player-1, budget)
+            # append the best value between the take and no take
             memo[budget/100].append(max(take, notake))
 
-    team = []
+    team = [] # the final team
 
-    budget = money
+    budget = money # the program's budget
     picks = len(players)
 
-    while(budget > 0 and picks > 0):
+    # while the budget>0, we have more players to choose from
+    while(budget > 0 and picks > 0 and len(team) < 9):
+    	# if the best value includes the last players
         if bestValue(picks, budget) > bestValue(picks - 1, budget):
-            team.append(players[picks])
-            budget = budget - players[picks].Price
+        	if (posnFilled(players, players[picks])):
+	        	# append him to the team
+	            team.append(players[picks])
+	            # subtract the players price from the budget
+	            budget = budget - players[picks].Price
+        # subtract the number of picks
         picks = picks - 1
     
+    # changes the name of each player to their name
     names = map(lambda x: x.name, team)
-    print "team: ", names
-    print "Fantasy points: ", memo[money/100][len(players) -1]
+    print "team: ", names # prints the names
+    print "Fantasy points: ", memo[money/100][len(players) -1] # the projected fantasy points
+
+# checks to see if the tean if filled with the current posn
+def posnFilled(team, player):
+	posn = player.Posn # the players posn
+	numOfPosn = 0 # the total number of posns of the certain players
+	for p in team: # for each player in a team
+		if p.Posn == posn: # if a player has the same position
+			numOfPosn += 1 
+	if (posn != "C"): # if the posn isn't center
+		return numOfPosn > 2 # see if there's less than 2
+	else: # else
+		return numOfPosn > 1 # see if there's less than 1
+	
 
 # the main method
 def main():
