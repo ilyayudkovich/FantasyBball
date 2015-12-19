@@ -83,20 +83,19 @@ def knapSack(players, money):
 
     # while the budget>0, we have more players to choose from
     while(budget > 0 and picks > 0 and len(team) < 9):
-    	# if the best value includes the last players
+	# if the best value includes the last players
         if bestValue(picks, budget) > bestValue(picks - 1, budget):
-        	if (posnFilled(players, players[picks])):
-	        	# append him to the team
-	            team.append(players[picks])
-	            # subtract the players price from the budget
-	            budget = budget - players[picks].Price
+        	# append him to the team
+            team.append(players[picks])
+            # subtract the players price from the budget
+            budget = budget - players[picks].Price
         # subtract the number of picks
-        picks = picks - 1
+    	picks = picks - 1 # changes the name of each player to their name
+	names = map(lambda x: x.name, team)
+	print "team: ", names # prints the names
+	print "Fantasy points: ", memo[money/100][len(players) -1] # the projected fantasy points
+
     
-    # changes the name of each player to their name
-    names = map(lambda x: x.name, team)
-    print "team: ", names # prints the names
-    print "Fantasy points: ", memo[money/100][len(players) -1] # the projected fantasy points
 
 # checks to see if the tean if filled with the current posn
 def posnFilled(team, player):
@@ -106,9 +105,9 @@ def posnFilled(team, player):
 		if p.Posn == posn: # if a player has the same position
 			numOfPosn += 1 
 	if (posn != "C"): # if the posn isn't center
-		return numOfPosn > 2 # see if there's less than 2
+		return numOfPosn <= 2 # see if there's less than 2
 	else: # else
-		return numOfPosn > 1 # see if there's less than 1
+		return numOfPosn <= 1 # see if there's less than 1
 	
 
 # the main method
@@ -155,32 +154,32 @@ def main():
 	players.extend(C)
 	# start printing all the players based on position
 	# only if they reach their goal
-	print "Printing PG's"
-	for player in PG:
-		if (player.reachGoal()):
-			print player.toString()
-			print player.dollarPerPoint()
+	# print "Printing PG's"
+	# for player in PG:
+	# 	if (player.reachGoal()):
+	# 		print player.toString()
+	# 		print player.dollarPerPoint()
 
-	print "\nPrinting SG's"
-	for player in SG:
-		if (player.reachGoal()):
-			print player.toString()
-			print player.dollarPerPoint()
-	print "\nPrinting SF's"
-	for player in SF:
-		if (player.reachGoal()):
-			print player.toString()
-			print player.dollarPerPoint()
-	print "\nPrinting PF's"
-	for player in PF:
-		if (player.reachGoal()):
-			print player.toString()
-			print player.dollarPerPoint()
-	print "\nPrinting C's"
-	for player in C:
-		if (player.reachGoal()):
-			print player.toString()
-			print player.dollarPerPoint()
+	# print "\nPrinting SG's"
+	# for player in SG:
+	# 	if (player.reachGoal()):
+	# 		print player.toString()
+	# 		print player.dollarPerPoint()
+	# print "\nPrinting SF's"
+	# for player in SF:
+	# 	if (player.reachGoal()):
+	# 		print player.toString()
+	# 		print player.dollarPerPoint()
+	# print "\nPrinting PF's"
+	# for player in PF:
+	# 	if (player.reachGoal()):
+	# 		print player.toString()
+	# 		print player.dollarPerPoint()
+	# print "\nPrinting C's"
+	# for player in C:
+	# 	if (player.reachGoal()):
+	# 		print player.toString()
+	# 		print player.dollarPerPoint()
 	print  "\n"
 	# print the result of the knapsack algorithm
 	knapSack(players, 60000)
